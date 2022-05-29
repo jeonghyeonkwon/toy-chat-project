@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 
 sequelize
-    .sync({force: false})
+    .sync({force: true})
     .then(() => {
         console.log('연결 성공');
     })
