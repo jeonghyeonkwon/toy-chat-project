@@ -4,7 +4,7 @@ import {sequelize}from './sequelize';
 class User extends Model{
     public readonly id!:number;
     public readonly userName!:string;
-    public readonly userUUID!:string;
+    public readonly userRandomId!:string;
 
 }
 User.init({
@@ -13,7 +13,7 @@ User.init({
         allowNull:false,
 
     },
-    userUUID:{
+    userRandomId:{
         type:DataTypes.STRING,
         allowNull:false,
         unique:true
@@ -29,9 +29,6 @@ User.init({
     charset:'utf8',
     collate:'utf8_general_ci'
 })
-
-
-
 
 export const associate = (db:dbType)=>{
     

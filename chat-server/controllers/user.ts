@@ -7,12 +7,15 @@ export const createUser = async (req:Request,res:Response,next:NextFunction)=>{
     const transaction = await sequelize.transaction();
     try{
         const {userName} = req.body;
-        await User.create({
+        const createUser = await User.create({
             userName:userName,
-            userUUID:v4(),
+            userRandomId:v4(),
         },{transaction});
 
         transaction.commit();
+        res.status(201).send({
+            msg: createUser.userRandomId
+        })
     }catch(err){
         transaction.rollback();
         next(err);
