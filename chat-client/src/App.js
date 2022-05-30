@@ -1,4 +1,5 @@
 import "./App.css";
+import React from "react";
 import LoginPage from "./pages/LoginPage";
 import styledComponent from "styled-components";
 
@@ -7,7 +8,8 @@ const AppForm = styledComponent.div`
   height:100vh;
   background-color: #ddd;
 `;
-function App() {
+
+function App(props) {
   return (
     <>
       <AppForm>

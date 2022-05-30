@@ -9,16 +9,15 @@ const LoginContainerForm = styledComponent.div`
     justify-content: center;
     align-items: center;
 `;
-class LoginPage extends Component {
-  render() {
-    return (
-      <>
-        <LoginContainerForm>
-          <LoginContainer />
-        </LoginContainerForm>
-      </>
-    );
-  }
+
+function LoginPage(props) {
+  return (
+    <>
+      <LoginContainerForm>
+        <LoginContainer />
+      </LoginContainerForm>
+    </>
+  );
 }
 
 export default LoginPage;
