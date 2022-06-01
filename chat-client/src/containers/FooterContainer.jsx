@@ -1,6 +1,7 @@
 import React from "react";
 import styledComponent from "styled-components";
 import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 const FooterContainerForm = styledComponent.div`
   width: 100%;
   height:100px;
@@ -20,9 +21,11 @@ function FooterContainer(props) {
   return (
     <FooterContainerForm>
       <FooterButtonForm>
-        <Button size="large" variant="contained">
-          방 만들기
-        </Button>
+        <Link to="/room-create">
+          <Button size="large" variant="contained">
+            방 만들기
+          </Button>
+        </Link>
       </FooterButtonForm>
       <FooterButtonForm>
         <Button size="large" variant="outlined">

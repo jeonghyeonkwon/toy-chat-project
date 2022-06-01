@@ -1,6 +1,7 @@
 import React from "react";
 import styledComponent from "styled-components";
 import FooterContainer from "../containers/FooterContainer";
+import HeaderContainer from "../containers/HeaderContainer";
 import RoomListContainer from "../containers/RoomListContainer";
 
 const RoomListContainerForm = styledComponent.div`
@@ -15,6 +16,7 @@ const RoomListContainerForm = styledComponent.div`
 function RoomList(props) {
   return (
     <RoomListContainerForm>
+      <HeaderContainer title="방 리스트" />
       <RoomListContainer />
       <FooterContainer />
     </RoomListContainerForm>

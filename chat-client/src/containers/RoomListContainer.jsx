@@ -8,8 +8,6 @@ function RoomListContainer(props) {
       sx={{
         width: "100%",
         height: 600,
-
-        borderRadius: 3,
         backgroundColor: "#fff",
         padding: 1,
       }}
