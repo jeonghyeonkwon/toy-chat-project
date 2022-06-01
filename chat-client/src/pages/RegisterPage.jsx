@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import RegisterContainer from "../containers/RegisterContainer";
 import styledComponent from "styled-components";

@@ -26,7 +26,8 @@ width:20%;
 display:flex;
 justify-content: right;
 align-items: center;
-color:#fff;
+
+
 `;
 function HeaderContainer({ title, back }) {
   return (

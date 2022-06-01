@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styledComponent from "styled-components";
 import { Box, Grid, Button } from "@mui/material";
 
@@ -46,7 +46,7 @@ function LoginContainer(props) {
         <Grid item xs={6} spacing={1}>
           <ButtonForm>
             <Button size="large" variant="contained">
-              로그인
+              로그인 하기
             </Button>
           </ButtonForm>
         </Grid>

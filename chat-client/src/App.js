@@ -17,7 +17,7 @@ const AppForm = styledComponent.div`
   justify-content: center;
 `;
 
-function App(props) {
+function App() {
   return (
     <>
       <AppForm>
