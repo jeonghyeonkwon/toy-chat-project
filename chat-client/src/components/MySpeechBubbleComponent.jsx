@@ -6,7 +6,7 @@ const SpeechBubbleFrame = styledComponent.div`
 `;
 const BubbleBody = styledComponent.div`
     background-color: yellow;    
-    padding:20px;
+    padding:10px;
     border: 3px solid gray;
     border-radius: 10px;
 `;

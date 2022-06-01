@@ -24,6 +24,7 @@ const SubmitForm = styledComponent.div`
     width:25%;
     display: flex;
     align-items: center;
+    padding:2px;
     // background-color:yellow;
 `;
 function FooterChatContainer(props) {
@@ -38,7 +39,14 @@ function FooterChatContainer(props) {
         />
       </InputFieldForm>
       <SubmitForm>
-        <Button fullWidth variant="contained" endIcon={<SendIcon />}>
+        <Button
+          fullWidth
+          style={{
+            height: "90%",
+          }}
+          variant="contained"
+          endIcon={<SendIcon />}
+        >
           보내기
         </Button>
       </SubmitForm>
