@@ -1,23 +1,23 @@
 import React, { Component } from "react";
-import LoginContainer from "../containers/LoginContainer";
+
 import RegisterContainer from "../containers/RegisterContainer";
 import styledComponent from "styled-components";
 
-const LoginOrRegisterContainerForm = styledComponent.div`
+const RegisterContainerForm = styledComponent.div`
     width: 350px;
     display: flex;
     justify-content: center;
     align-items: center;
 `;
 
-function LoginOrRegisterPage(props) {
+function RegisterPage(props) {
   return (
     <>
-      <LoginOrRegisterContainerForm>
+      <RegisterContainerForm>
         <RegisterContainer />
-      </LoginOrRegisterContainerForm>
+      </RegisterContainerForm>
     </>
   );
 }
 
-export default LoginOrRegisterPage;
+export default RegisterPage;

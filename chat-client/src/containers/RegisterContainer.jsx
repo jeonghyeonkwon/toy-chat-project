@@ -3,6 +3,7 @@ import styledComponent from "styled-components";
 import { Box, Grid, Button } from "@mui/material";
 
 import FieldComponent from "../components/FieldComponent";
+import { Link } from "react-router-dom";
 const LoginHeaderForm = styledComponent.div`
   // background-color: dodgerblue;
   height:100%;
@@ -44,16 +45,18 @@ function RegisterContainer(props) {
         <Grid item xs={6} spacing={1}>
           <ButtonForm>
             <Button size="large" variant="contained">
-              로그인
+              가입 완료
             </Button>
           </ButtonForm>
         </Grid>
 
         <Grid item xs={6} spacing={1}>
           <ButtonForm>
-            <Button size="large" variant="outlined">
-              회원가입
-            </Button>
+            <Link to="login">
+              <Button size="large" variant="outlined">
+                로그인
+              </Button>
+            </Link>
           </ButtonForm>
         </Grid>
       </Grid>

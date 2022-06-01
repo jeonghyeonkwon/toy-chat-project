@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Grid } from "@mui/material";
 import RoomListComponent from "../components/RoomListComponent";
-
+import { Link } from "react-router-dom";
 function RoomListContainer(props) {
   return (
     <Box
@@ -17,49 +17,9 @@ function RoomListContainer(props) {
     >
       <Grid container rowSpacing={1} sx={12}>
         <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
-        </Grid>
-        <Grid item xs={12}>
-          <RoomListComponent></RoomListComponent>
+          <Link to={"/room/1"}>
+            <RoomListComponent></RoomListComponent>
+          </Link>
         </Grid>
       </Grid>
     </Box>
