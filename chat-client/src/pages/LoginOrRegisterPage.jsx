@@ -4,8 +4,8 @@ import RegisterContainer from "../containers/RegisterContainer";
 import styledComponent from "styled-components";
 
 const LoginOrRegisterContainerForm = styledComponent.div`
-    width: 100%;
-    height: 100%;
+width: 400px;
+height: 70%;
     display: flex;
     justify-content: center;
     align-items: center;

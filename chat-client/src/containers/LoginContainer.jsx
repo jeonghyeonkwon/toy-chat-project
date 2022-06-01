@@ -24,7 +24,7 @@ function LoginContainer(props) {
   return (
     <Box
       sx={{
-        width: 300,
+        width: "100%",
         height: 400,
         border: 1,
         borderColor: "#81c784",

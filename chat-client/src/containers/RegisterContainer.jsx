@@ -13,7 +13,7 @@ const LoginHeaderForm = styledComponent.div`
 `;
 
 const ButtonForm = styledComponent.div`
-// background-color: yellowgreen;
+
 border:1px;
 border-color: #000;
 text-align:center;
@@ -23,7 +23,7 @@ function RegisterContainer(props) {
   return (
     <Box
       sx={{
-        width: 300,
+        width: "100%",
         height: 400,
         border: 1,
         borderColor: "#81c784",

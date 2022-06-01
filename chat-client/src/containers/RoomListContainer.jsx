@@ -6,10 +6,9 @@ function RoomListContainer(props) {
   return (
     <Box
       sx={{
-        width: 400,
+        width: "100%",
         height: 600,
-        border: 1,
-        borderColor: "#81c784",
+
         borderRadius: 3,
         backgroundColor: "#fff",
         padding: 1,
