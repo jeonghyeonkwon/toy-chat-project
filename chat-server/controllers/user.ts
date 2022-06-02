@@ -1,8 +1,10 @@
 import { NextFunction, Response, Request } from "express";
+import { join } from "path/posix";
 import { v4 } from "uuid";
 
 import { sequelize } from "../models";
 import User from "../models/user";
+import * as jwt from "jsonwebtoken";
 const bcrypt = require("bcrypt");
 export const createUser = async (
   req: Request,
@@ -35,6 +37,44 @@ export const createUser = async (
     });
   } catch (err) {
     transaction.rollback();
+    next(err);
+  }
+};
+
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId, userPassword } = req.body;
+    const isExistUser = await User.findOne({ where: { userId } });
+    if (!isExistUser) {
+      throw Error("존재하지 않는 유저입니다.");
+    }
+    const passwordBool = await bcrypt.compare(
+      userPassword,
+      isExistUser.userPassword
+    );
+
+    if (!passwordBool) {
+      throw Error("비밀번호를 다시 확인해 주세요");
+    }
+
+    const token = jwt.sign(
+      {
+        id: isExistUser.userRandomId,
+      },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "60m",
+        issuer: "jeonghyeonkwon",
+      }
+    );
+    return res.status(200).send({
+      token: token,
+    });
+  } catch (err) {
     next(err);
   }
 };

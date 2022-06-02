@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 import * as cors from "cors";
 const { sequelize } = require("./models");
 import userRouter from "./routes/user";
+
 dotenv.config();
 
 const app = express();
