@@ -3,9 +3,10 @@ import { all } from "redux-saga/effects";
 
 import loading from "./loading";
 import register, { registerSaga } from "./register";
-const rootReducer = combineReducers({ loading, register });
+import login, { loginSaga } from "./login";
+const rootReducer = combineReducers({ loading, register, login });
 
 export function* rootSaga() {
-  yield all([registerSaga()]);
+  yield all([registerSaga(), loginSaga()]);
 }
 export default rootReducer;

@@ -9,13 +9,25 @@ import { createStore, applyMiddleware } from "redux";
 import rootReducer, { rootSaga } from "./modules";
 import { composeWithDevTools } from "redux-devtools-extension";
 import createSagaMiddleware from "redux-saga";
+import { tokenCheck } from "./modules/login";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(sagaMiddleware))
 );
+
+function loadUser() {
+  try {
+    const token = localStorage.getItem("token");
+    store.dispatch(tokenCheck(token));
+  } catch (e) {
+    console.log("localstorage가 작동하지 않습니다.");
+  }
+}
+
 sagaMiddleware.run(rootSaga);
+loadUser();
 root.render(
   <BrowserRouter>
     <Provider store={store}>
