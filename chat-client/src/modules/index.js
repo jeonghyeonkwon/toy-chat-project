@@ -1,8 +1,11 @@
 import { combineReducers } from "redux";
 import { all } from "redux-saga/effects";
-const rootReducer = combineReducers({});
+
+import loading from "./loading";
+import register, { registerSaga } from "./register";
+const rootReducer = combineReducers({ loading, register });
 
 export function* rootSaga() {
-  yield all([]);
+  yield all([registerSaga()]);
 }
 export default rootReducer;

@@ -8,7 +8,13 @@ const FieldForm = styledComponent.div`
   padding:20px;
 `;
 
-function FieldComponent({ fieldTitle, fieldType }) {
+function FieldComponent({
+  fieldTitle,
+  fieldType,
+  fieldName,
+  fieldValue,
+  onChangeField,
+}) {
   return (
     <>
       <FieldForm>
@@ -18,6 +24,9 @@ function FieldComponent({ fieldTitle, fieldType }) {
           type={fieldType}
           variant="standard"
           fullWidth
+          name={fieldName}
+          value={fieldValue}
+          onChange={onChangeField}
         />
       </FieldForm>
     </>
