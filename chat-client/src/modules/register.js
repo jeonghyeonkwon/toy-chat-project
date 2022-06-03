@@ -51,7 +51,7 @@ export default handleActions(
         } else {
           draft.registerApi.success = null;
           draft.registerApi.error =
-            "알수 없는 에러가 있습니다. 다시 시도해 주세요";
+            "알 수 없는 에러가 있습니다. 다시 시도해 주세요";
         }
       }),
   },
