@@ -1,11 +1,13 @@
 import * as express from "express";
 import * as morgan from "morgan";
 import * as session from "express-session";
-import { webSocket } from "./socket";
+import { chatSocketIo } from "./chatSocketIo";
+import { chatWebSocket } from "./chatWebSocket";
 import * as dotenv from "dotenv";
 import * as cors from "cors";
 const { sequelize } = require("./models");
 import userRouter from "./routes/user";
+import roomRouter from "./routes/room";
 
 dotenv.config();
 
@@ -30,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
 app.use("/api/user", userRouter);
-
+app.use("/api/room", roomRouter);
 app.use(
   (
     err: any,

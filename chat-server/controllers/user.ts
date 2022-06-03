@@ -31,12 +31,12 @@ export const createUser = async (
       { transaction }
     );
 
-    transaction.commit();
+    await transaction.commit();
     res.status(201).send({
       msg: createUser.userRandomId,
     });
   } catch (err) {
-    transaction.rollback();
+    await transaction.rollback();
     next(err);
   }
 };
