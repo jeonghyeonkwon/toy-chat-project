@@ -73,6 +73,22 @@ export const loginUser = async (
     );
     return res.status(200).send({
       token: token,
+      userRandomId: isExistUser.userRandomId,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const validateToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const decoded = req.decoded!;
+    res.status(200).send({
+      userRandomId: decoded.id!,
     });
   } catch (err) {
     next(err);

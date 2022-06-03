@@ -8,10 +8,11 @@ export const verifyToken = (
   next: NextFunction
 ) => {
   try {
-    req.decoded = jwt.verify(
-      req.headers.authorization!,
-      process.env.JWT_SECRET!
-    ) as JwtPayload;
+    const token = req.headers["authorization"]!.split(" ")[1];
+
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    req.decoded = payload;
+
     return next();
   } catch (err: any) {
     if (err.name === "TokenExpiredError") {
