@@ -27,7 +27,7 @@ const SubmitForm = styledComponent.div`
     padding:2px;
     // background-color:yellow;
 `;
-function FooterChatContainer(props) {
+function FooterChatContainer({ onChangeMessage, fieldValue, onSendMessage }) {
   return (
     <FooterChatContainerForm>
       <InputFieldForm>
@@ -36,6 +36,8 @@ function FooterChatContainer(props) {
           placeholder="내용을 입력하세요"
           variant="filled"
           fullWidth
+          onChange={onChangeMessage}
+          value={fieldValue}
         />
       </InputFieldForm>
       <SubmitForm>
@@ -46,6 +48,7 @@ function FooterChatContainer(props) {
           }}
           variant="contained"
           endIcon={<SendIcon />}
+          onClick={onSendMessage}
         >
           보내기
         </Button>

@@ -31,7 +31,11 @@ const initialState = {
     userPassword: "",
   },
   loginApi: {
-    token: null,
+    authInfo: {
+      token: null,
+      userRandomId: null,
+    },
+
     error: null,
   },
 };
@@ -44,19 +48,30 @@ export default handleActions(
       }),
     [LOGIN_SUCCESS]: (state, { payload: success }) =>
       produce(state, (draft) => {
-        draft.loginApi.token = success;
+        draft.loginApi.authInfo.token = success.token;
+        draft.loginApi.authInfo.userRandomId = success.userRandomId;
         draft.loginApi.error = null;
       }),
     [LOGIN_FAILURE]: (state, { payload: error }) =>
       produce(state, (draft) => {
         if (error.response.status === 400) {
-          draft.loginApi.token = null;
+          draft.loginApi.authInfo.token = null;
+          draft.loginApi.authInfo.userRandomId = null;
           draft.loginApi.error = error.response.data.msg;
         } else {
-          draft.loginApi.token = null;
+          draft.loginApi.authInfo.token = null;
+          draft.loginApi.authInfo.userRandomId = null;
           draft.loginApi.error =
             "알수 없는 에러가 있습니다. 다시 시도해 주세요";
         }
+      }),
+    [CHECK_SUCCESS]: (state, { payload: success }) =>
+      produce(state, (draft) => {
+        draft.loginApi.authInfo.userRandomId = success.userRandomId;
+      }),
+    [CHECK_FAILURE]: (state, { payload: error }) =>
+      produce(state, (draft) => {
+        draft.loginApi.authInfo.userRandomId = null;
       }),
   },
   initialState

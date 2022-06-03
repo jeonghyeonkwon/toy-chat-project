@@ -2,6 +2,7 @@ import React from "react";
 import styledComponent from "styled-components";
 import MySpeechBubbleComponent from "../components/MySpeechBubbleComponent";
 import YourSpeechBubbleComponent from "../components/YourSpeechBubbleComponent";
+
 const RoomDetailContainerForm = styledComponent.div`
     height:100%;
     width:100%;

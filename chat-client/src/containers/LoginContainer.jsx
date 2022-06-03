@@ -26,14 +26,14 @@ padding:25px;
 function LoginContainer(props) {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { userForm, loginLoading, token, loginError } = useSelector(
-    ({ login, loading }) => ({
+  const { userForm, loginLoading, token, userRandomId, loginError } =
+    useSelector(({ login, loading }) => ({
       userForm: login.user,
       loginLoading: loading[LOGIN],
-      token: login.loginApi.token,
+      token: login.loginApi.authInfo.token,
+      userRandomId: login.loginApi.authInfo.userRandomId,
       loginError: login.loginApi.error,
-    })
-  );
+    }));
   const onChangeField = (e) => {
     const { name, value } = e.target;
     dispatch(changeField({ key: name, value }));
