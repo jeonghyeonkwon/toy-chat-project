@@ -1,5 +1,17 @@
 import React from "react";
 import styledComponent from "styled-components";
+const SpeechBubbleForm = styledComponent.div`
+  // background-color:dodgerblue;
+  padding-top:20px;
+  padding-right:20px;
+  span{
+    // background-color:crimson;
+    display:block;
+    text-align: left;
+    font-weight:bold;
+    padding-left: 15px; 
+  }
+`;
 const SpeechBubbleFrame = styledComponent.div`
     // background-color:dodgerblue;
     position:relative;
@@ -24,12 +36,15 @@ z-index:9999;
 
 transform :  translate(-50%,-50%) rotate(45deg);
 `;
-function YourSpeechBubbleComponent({ content }) {
+function YourSpeechBubbleComponent({ writer, content }) {
   return (
-    <SpeechBubbleFrame>
-      <BubbleBody>{content}</BubbleBody>
-      <Tail></Tail>
-    </SpeechBubbleFrame>
+    <SpeechBubbleForm>
+      <span>{writer}</span>
+      <SpeechBubbleFrame>
+        <BubbleBody>{content}</BubbleBody>
+        <Tail></Tail>
+      </SpeechBubbleFrame>
+    </SpeechBubbleForm>
   );
 }
 

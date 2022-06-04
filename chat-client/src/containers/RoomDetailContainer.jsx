@@ -14,12 +14,27 @@ const BubbleFrame = styledComponent.div`
         margin-bottom:10px;
     }
 `;
-function RoomDetailContainer(props) {
+function RoomDetailContainer({ myRandomId, messageRecord }) {
   return (
     <RoomDetailContainerForm>
       <BubbleFrame>
-        <MySpeechBubbleComponent content="dsfasdfd" />
-        <YourSpeechBubbleComponent content="asdfasdfsda" />
+        {messageRecord.map((obj) => {
+          if (obj.userRandomId === myRandomId) {
+            return (
+              <MySpeechBubbleComponent
+                writer={obj.writerId}
+                content={obj.message}
+              />
+            );
+          } else {
+            return (
+              <YourSpeechBubbleComponent
+                writer={obj.writerId}
+                content={obj.message}
+              />
+            );
+          }
+        })}
       </BubbleFrame>
     </RoomDetailContainerForm>
   );

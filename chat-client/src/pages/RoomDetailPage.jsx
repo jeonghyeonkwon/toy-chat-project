@@ -42,14 +42,21 @@ function RoomDetailPage(props) {
   };
   useEffect(() => {
     if (lastMessage !== null) {
-      setMessageHistory((prev) => prev.concat(lastMessage));
+      const obj = JSON.parse(lastMessage.data);
+      console.log(obj);
+      setMessageHistory([...messageHistory, obj]);
+      console.log(messageHistory);
     }
   }, [lastMessage, setMessageHistory]);
   useEffect(() => {}, []);
   return (
     <RoomDetailForm>
       <HeaderContainer title="방이름" back />
-      <RoomDetailContainer />
+      <RoomDetailContainer
+        myRandomId={userRandomId}
+        messageRecord={messageHistory}
+      />
+
       <FooterChatContainer
         onChangeMessage={onChangeMessage}
         fieldValue={message}
