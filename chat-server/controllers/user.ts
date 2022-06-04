@@ -86,7 +86,7 @@ export const validateToken = async (
   next: NextFunction
 ) => {
   try {
-    const decoded = req.decoded!;
+    const decoded = req.decoded! as jwt.JwtPayload;
     res.status(200).send({
       userRandomId: decoded.id!,
     });

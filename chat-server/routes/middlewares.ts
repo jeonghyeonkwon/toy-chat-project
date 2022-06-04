@@ -11,7 +11,7 @@ export const verifyToken = (
     const token = req.headers["authorization"]!.split(" ")[1];
 
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-    req.decoded = payload;
+    req.decoded! = payload;
 
     return next();
   } catch (err: any) {
