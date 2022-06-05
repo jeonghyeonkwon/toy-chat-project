@@ -6,6 +6,10 @@ import HeaderContainer from "../containers/HeaderContainer";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { io } from "socket.io-client";
+import { SOCKET_DEFAULT_URL, CHAT_URL } from "../lib/api/socket";
+import axios from "axios";
+const socket = io(CHAT_URL, { path: "/socket.io" });
 const RoomDetailForm = styledComponent.div`
     width: 400px;
     height: 70%;
@@ -20,11 +24,9 @@ function RoomDetailPage(props) {
   const { userRandomId } = useSelector(({ login }) => ({
     userRandomId: login.loginApi.authInfo.userRandomId,
   }));
-  const [socketUrl, setSocketUrl] = useState(
-    `ws://127.0.0.1:8000/room/${location.pathname.split("/")[2]}`
-  );
+
   const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
   const [message, setMessage] = useState("");
   const onChangeMessage = (e) => {
     const { value } = e.target;
@@ -32,6 +34,7 @@ function RoomDetailPage(props) {
     setMessage(value);
   };
   const onSendMessage = () => {
+    console.log("click");
     const urlRoomId = location.pathname.split("/")[2];
     const roomInfo = {
       type: "chat",
@@ -39,18 +42,24 @@ function RoomDetailPage(props) {
       userRandomId: userRandomId,
       message: message,
     };
-    sendMessage(JSON.stringify(roomInfo));
+    socket.emit("createChat", roomInfo);
     setMessage("");
   };
   useEffect(() => {
-    if (lastMessage !== null) {
-      const obj = JSON.parse(lastMessage.data);
-      console.log(obj);
-      setMessageHistory([...messageHistory, obj]);
-      console.log(messageHistory);
+    socket.on("chatInfo", (data) => {
+      setMessageHistory([...messageHistory, data]);
+    });
+  });
+  useEffect(() => {
+    async function fetchChat() {
+      const response = await axios.get(
+        `${SOCKET_DEFAULT_URL}/api/room/${location.pathname.split("/")[2]}`
+      );
+      console.log(response);
+      setMessageHistory(response.data);
     }
-  }, [lastMessage, setMessageHistory]);
-  useEffect(() => {}, []);
+    fetchChat();
+  }, []);
   return (
     <RoomDetailForm>
       <HeaderContainer title="방이름" back />

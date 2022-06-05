@@ -7,6 +7,7 @@ const RoomDetailContainerForm = styledComponent.div`
     height:100%;
     width:100%;
     background-color: #fff;
+    overflow:scroll
 `;
 const BubbleFrame = styledComponent.div`
     padding:10px;
