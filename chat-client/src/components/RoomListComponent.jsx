@@ -10,6 +10,7 @@ const RoomListForm = styledComponent.div`
     border-radius: 6px;
     overflow:hidden;
     padding:5px;
+    margin-bottom:5px;
 `;
 const RoomTitleFrom = styledComponent.div`
     height: 65%;
@@ -34,16 +35,16 @@ const HeadCountForm = styledComponent.div`
       color : dodgerblue;
     }
 `;
-function RoomListComponent(props) {
+function RoomListComponent({ roomInfo }) {
   return (
     <RoomListForm>
       <RoomTitleFrom>
         <label>방 이름 : </label>
-        <span>누구 누구 오세요</span>
+        <span>{roomInfo.roomTitle}</span>
       </RoomTitleFrom>
       <HeadCountForm>
         <label>총 인원 : </label>
-        <span>23명</span>
+        <span>{roomInfo.totalPerson}명</span>
       </HeadCountForm>
     </RoomListForm>
   );

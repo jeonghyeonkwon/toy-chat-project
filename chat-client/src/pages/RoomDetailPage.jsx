@@ -20,7 +20,9 @@ function RoomDetailPage(props) {
   const { userRandomId } = useSelector(({ login }) => ({
     userRandomId: login.loginApi.authInfo.userRandomId,
   }));
-  const [socketUrl, setSocketUrl] = useState("ws://127.0.0.1:8000");
+  const [socketUrl, setSocketUrl] = useState(
+    `ws://127.0.0.1:8000/room/${location.pathname.split("/")[2]}`
+  );
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [message, setMessage] = useState("");
