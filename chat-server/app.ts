@@ -50,5 +50,5 @@ const server = app.listen(app.get("port"), () => {
 });
 
 server;
-chatWebSocket(server);
+chatSocketIo(server);
 // webSocket(server);

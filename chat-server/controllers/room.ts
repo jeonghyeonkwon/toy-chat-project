@@ -8,6 +8,27 @@ import Room from "../models/room";
 import Chat from "../models/chat";
 import { ChatDto } from "../dto/ChatDto";
 import User from "../models/user";
+import { IRoomGroup } from "../interfaces/room";
+import { RoomDto } from "../dto/RoomDto";
+export const roomList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const roomList = await Room.findAll({
+      where: {
+        roomStatus: RoomStatusEnum.ING,
+      },
+    });
+    const roomDtoList = roomList.map(
+      (obj) => new RoomDto(obj.roomTitle, obj.roomRandomId, obj.totalPerson)
+    ) as RoomDto[];
+    res.status(200).send(roomDtoList);
+  } catch (err) {
+    next(err);
+  }
+};
 export const createRoom = async (
   req: Request,
   res: Response,
@@ -44,6 +65,50 @@ const prevChatData = async (
   next: NextFunction
 ) => {};
 
+export const chatList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const roomRandomId = req.params.id!;
+    const isExistRoom = await Room.findOne({ where: { roomRandomId } });
+    if (!isExistRoom || isExistRoom.roomStatus === RoomStatusEnum.FINISH) {
+      throw Error("존재하지 않는 방입니다.");
+    }
+  } catch (err) {
+    await transaction.rollback();
+    next(err);
+  }
+};
+
+export const createRoomChangeStatus = async (room: IRoomGroup) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const { roomRandomId, roomTitle } = room;
+    const isExistRoom = await Room.findOne({ where: { roomRandomId } });
+    if (!isExistRoom) {
+      throw Error("방이 존재 하지 않습니다");
+    }
+    if (isExistRoom.roomStatus !== RoomStatusEnum.READY) {
+      throw Error("이미 생성된 방입니다");
+    }
+    const updateRoom = await isExistRoom.update({
+      roomStatus: RoomStatusEnum.ING,
+      totalPerson: 1,
+    });
+    return new RoomDto(
+      updateRoom.roomTitle,
+      updateRoom.roomRandomId,
+      updateRoom.totalPerson
+    );
+  } catch (err) {
+    await transaction.rollback();
+    console.error(err);
+    return null;
+  }
+};
 export const createChatData = async (chat: IChatGroup) => {
   const transaction = await sequelize.transaction();
   const { type, roomRandomId, userRandomId, message } = chat;
