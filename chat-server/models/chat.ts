@@ -1,13 +1,24 @@
-import { DataTypes, Model } from "sequelize";
+import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  DataTypes,
+  Model,
+} from "sequelize";
 import { dbType } from "./index";
 import { sequelize } from "./sequelize";
-class Room extends Model {
+import User from "./user";
+class Chat extends Model {
   public readonly id!: number;
   public readonly roomRandomId!: string;
   public readonly userRandomId!: string;
   public readonly message!: string;
+  public readonly createdAt!: Date;
+  public readonly User!: User;
+
+  public setUser!: BelongsToSetAssociationMixin<User, string>;
+  public getUser!: BelongsToGetAssociationMixin<User>;
 }
-Room.init(
+Chat.init(
   {
     roomRandomId: {
       type: DataTypes.STRING,
@@ -33,5 +44,10 @@ Room.init(
   }
 );
 
-export const associate = (db: dbType) => {};
-export default Room;
+export const associate = (db: dbType) => {
+  db.Chat.belongsTo(db.User, {
+    foreignKey: "user_pk",
+    targetKey: "userRandomId",
+  });
+};
+export default Chat;

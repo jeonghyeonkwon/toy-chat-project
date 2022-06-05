@@ -59,26 +59,39 @@ export const createRoom = async (
   }
 };
 
-const prevChatData = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
-
 export const chatList = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const transaction = await sequelize.transaction();
   try {
     const roomRandomId = req.params.id!;
     const isExistRoom = await Room.findOne({ where: { roomRandomId } });
     if (!isExistRoom || isExistRoom.roomStatus === RoomStatusEnum.FINISH) {
       throw Error("존재하지 않는 방입니다.");
     }
+    const chatList = await Chat.findAll({
+      where: {
+        roomRandomId: roomRandomId,
+      },
+      include: {
+        model: User,
+      },
+    });
+    console.log("chat list");
+    const chatDtoList = chatList.map(
+      (chat) =>
+        new ChatDto(
+          chat.User.userId,
+          chat.User.userRandomId,
+          chat.roomRandomId,
+          chat.message,
+          chat.createdAt
+        )
+    );
+    console.log(chatDtoList);
+    res.status(200).send(chatDtoList);
   } catch (err) {
-    await transaction.rollback();
     next(err);
   }
 };
@@ -94,10 +107,13 @@ export const createRoomChangeStatus = async (room: IRoomGroup) => {
     if (isExistRoom.roomStatus !== RoomStatusEnum.READY) {
       throw Error("이미 생성된 방입니다");
     }
-    const updateRoom = await isExistRoom.update({
-      roomStatus: RoomStatusEnum.ING,
-      totalPerson: 1,
-    });
+    const updateRoom = await isExistRoom.update(
+      {
+        roomStatus: RoomStatusEnum.ING,
+        totalPerson: 1,
+      },
+      { transaction }
+    );
     return new RoomDto(
       updateRoom.roomTitle,
       updateRoom.roomRandomId,
@@ -116,17 +132,22 @@ export const createChatData = async (chat: IChatGroup) => {
     console.log(chat);
     const isExistUser = await User.findOne({ where: { userRandomId } });
     if (!isExistUser) throw Error(`유저가 없음`);
-    const createChat = await Chat.create({
-      roomRandomId: roomRandomId,
-      userRandomId: userRandomId,
-      message: message,
-    });
+    const createChat = await Chat.create(
+      {
+        roomRandomId: roomRandomId,
+        userRandomId: userRandomId,
+        message: message,
+      },
+      { transaction }
+    );
+    await createChat.setUser(isExistUser, { transaction });
     transaction.commit();
     const chatObject = new ChatDto(
       isExistUser.userId,
       userRandomId,
       roomRandomId,
-      message
+      message,
+      createChat.createdAt
     );
     return chatObject;
   } catch (err) {

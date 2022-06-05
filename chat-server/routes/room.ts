@@ -1,7 +1,7 @@
 import * as express from "express";
-import { roomList, createRoom } from "../controllers/room";
+import { roomList, createRoom, chatList } from "../controllers/room";
 const router = express.Router();
 router.get("/", roomList);
 router.post("/", createRoom);
-// router.get("/:id", chatList);
+router.get("/:id", chatList);
 export default router;

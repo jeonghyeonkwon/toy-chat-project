@@ -1,5 +1,5 @@
 import * as http from "http";
-import { createRoomChangeStatus } from "./controllers/room";
+import { createChatData, createRoomChangeStatus } from "./controllers/room";
 const SocketIO = require("socket.io");
 
 export const chatSocketIo = (server: http.Server) => {
@@ -21,6 +21,15 @@ export const chatSocketIo = (server: http.Server) => {
       const roomDto = await createRoomChangeStatus(data);
       if (roomDto !== null) {
         room.emit("roomInfo", roomDto);
+      }
+    });
+  });
+  chat.on("connection", (socket: any) => {
+    const req = socket.request;
+    socket.on("createChat", async (data: any) => {
+      const chatDto = await createChatData(data);
+      if (chatDto !== null) {
+        chat.emit("chatInfo", chatDto);
       }
     });
   });
