@@ -35,6 +35,7 @@ function RoomCreateContainer(props) {
       createFail: room.roomApi.error,
     })
   );
+
   const onChangeField = (e) => {
     const { name, value } = e.target;
     dispatch(changeField({ key: name, value }));
@@ -42,6 +43,11 @@ function RoomCreateContainer(props) {
   const onClickCreateRoom = () => {
     dispatch(createRoom(roomForm));
   };
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("connection server");
+    });
+  });
   useEffect(() => {
     dispatch(initialize());
     return () => {
@@ -62,6 +68,7 @@ function RoomCreateContainer(props) {
       history.push("/room-create");
     }
   }, [createSuccess, createFail]);
+
   return (
     <Box
       sx={{

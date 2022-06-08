@@ -3,7 +3,7 @@ import styledComponent from "styled-components";
 import FooterChatContainer from "../containers/footer/FooterChatContainer";
 import RoomDetailContainer from "../containers/RoomDetailContainer";
 import HeaderContainer from "../containers/HeaderContainer";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
@@ -24,7 +24,7 @@ function RoomDetailPage(props) {
   const { userRandomId } = useSelector(({ login }) => ({
     userRandomId: login.loginApi.authInfo.userRandomId,
   }));
-
+  const [roomTitle, setRoomTitle] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
 
   const [message, setMessage] = useState("");
@@ -51,18 +51,20 @@ function RoomDetailPage(props) {
     });
   });
   useEffect(() => {
+    console.log(CHAT_URL);
     async function fetchChat() {
       const response = await axios.get(
         `${SOCKET_DEFAULT_URL}/api/room/${location.pathname.split("/")[2]}`
       );
       console.log(response);
-      setMessageHistory(response.data);
+      setRoomTitle(response.data.roomTitle);
+      setMessageHistory(response.data.chatDtoList);
     }
     fetchChat();
   }, []);
   return (
     <RoomDetailForm>
-      <HeaderContainer title="방이름" back />
+      <HeaderContainer title={roomTitle} back />
       <RoomDetailContainer
         myRandomId={userRandomId}
         messageRecord={messageHistory}

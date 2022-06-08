@@ -20,7 +20,13 @@ function RoomListContainer(props) {
     fetchRoomList();
   }, []);
   useEffect(() => {
+    socket.on("connect", () => {
+      console.log("roomList socket connect");
+    });
+  });
+  useEffect(() => {
     socket.on("roomInfo", (data) => {
+      console.log(data);
       setRoom([...room, data]);
     });
   });
