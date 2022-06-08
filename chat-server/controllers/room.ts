@@ -78,7 +78,7 @@ export const chatList = async (
         model: User,
       },
     });
-    console.log("chat list");
+
     const chatDtoList = chatList.map(
       (chat) =>
         new ChatDto(
@@ -89,8 +89,10 @@ export const chatList = async (
           chat.createdAt
         )
     );
-    console.log(chatDtoList);
-    res.status(200).send(chatDtoList);
+
+    res
+      .status(200)
+      .send({ roomTitle: isExistRoom.roomTitle, chatDtoList: chatDtoList });
   } catch (err) {
     next(err);
   }
@@ -114,6 +116,7 @@ export const createRoomChangeStatus = async (room: IRoomGroup) => {
       },
       { transaction }
     );
+    await transaction.commit();
     return new RoomDto(
       updateRoom.roomTitle,
       updateRoom.roomRandomId,
@@ -137,6 +140,7 @@ export const createChatData = async (chat: IChatGroup) => {
         roomRandomId: roomRandomId,
         userRandomId: userRandomId,
         message: message,
+        chatRandomId: v4(),
       },
       { transaction }
     );

@@ -14,7 +14,7 @@ class Chat extends Model {
   public readonly message!: string;
   public readonly createdAt!: Date;
   public readonly User!: User;
-
+  public readonly chatRandomId!: string;
   public setUser!: BelongsToSetAssociationMixin<User, string>;
   public getUser!: BelongsToGetAssociationMixin<User>;
 }
@@ -30,6 +30,11 @@ Chat.init(
     },
     message: {
       type: DataTypes.STRING,
+    },
+    chatRandomId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
   },
   {
