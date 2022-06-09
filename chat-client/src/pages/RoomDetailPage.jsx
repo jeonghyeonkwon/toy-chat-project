@@ -6,10 +6,9 @@ import HeaderContainer from "../containers/HeaderContainer";
 
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { io } from "socket.io-client";
-import { SOCKET_DEFAULT_URL, CHAT_URL } from "../lib/api/socket";
+import { socket, SOCKET_DEFAULT_URL } from "../lib/api/socket";
 import axios from "axios";
-const socket = io(CHAT_URL, { path: "/socket.io" });
+
 const RoomDetailForm = styledComponent.div`
     width: 400px;
     height: 70%;
@@ -19,7 +18,8 @@ const RoomDetailForm = styledComponent.div`
     justify-content: center;
     align-items: center;
 `;
-function RoomDetailPage(props) {
+
+function RoomDetailPage() {
   const location = useLocation();
   const { userRandomId } = useSelector(({ login }) => ({
     userRandomId: login.loginApi.authInfo.userRandomId,
@@ -33,6 +33,12 @@ function RoomDetailPage(props) {
 
     setMessage(value);
   };
+  // const socket = io(CHAT_URL, {
+  //   path: "/socket.io/",
+  //   query: {
+  //     roomId: location.pathname.split("/")[2],
+  //   },
+  // });
   const onSendMessage = () => {
     console.log("click");
     const urlRoomId = location.pathname.split("/")[2];
@@ -51,7 +57,6 @@ function RoomDetailPage(props) {
     });
   });
   useEffect(() => {
-    console.log(CHAT_URL);
     async function fetchChat() {
       const response = await axios.get(
         `${SOCKET_DEFAULT_URL}/api/room/${location.pathname.split("/")[2]}`

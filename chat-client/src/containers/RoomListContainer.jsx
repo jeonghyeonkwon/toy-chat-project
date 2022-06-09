@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Box, Grid } from "@mui/material";
 import RoomListComponent from "../components/RoomListComponent";
 import { Link } from "react-router-dom";
-import { io } from "socket.io-client";
+
 import { SOCKET_DEFAULT_URL, ROOM_URL } from "../lib/api/socket";
 import axios from "axios";
-const socket = io(ROOM_URL, { path: "/socket.io" });
-function RoomListContainer(props) {
+import { socket } from "../lib/api/socket";
+function RoomListContainer() {
   const [room, setRoom] = useState([]);
   useEffect(() => {
     let loading = false;
@@ -19,16 +19,14 @@ function RoomListContainer(props) {
     }
     fetchRoomList();
   }, []);
+
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("roomList socket connect");
-    });
-  });
-  useEffect(() => {
-    socket.on("roomInfo", (data) => {
-      console.log(data);
-      setRoom([...room, data]);
-    });
+    console.log("asdasd");
+
+    // socket.on("roomInfo", (data) => {
+    //   console.log(data);
+    //   setRoom([...room, data]);
+    // });
   });
   return (
     <Box

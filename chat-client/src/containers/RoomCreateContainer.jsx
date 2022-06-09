@@ -5,9 +5,8 @@ import FieldComponent from "../components/FieldComponent";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initialize, changeField, CREATE, createRoom } from "../modules/room";
-import { io } from "socket.io-client";
-import { ROOM_URL } from "../lib/api/socket";
-const socket = io(ROOM_URL, { path: "/socket.io" });
+
+import { socket } from "../lib/api/socket";
 const RoomCreateHeaderForm = styledComponent.div`
   // background-color: dodgerblue;
   height:100%;
@@ -24,7 +23,7 @@ text-align:center;
 padding:25px;
 `;
 
-function RoomCreateContainer(props) {
+function RoomCreateContainer() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { roomForm, createLoading, createSuccess, createFail } = useSelector(

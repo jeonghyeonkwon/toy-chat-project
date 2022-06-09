@@ -17,7 +17,7 @@ const FooterButtonForm = styledComponent.div`
   justify-content: center;
   align-items: center;
 `;
-function FooterContainer(props) {
+function FooterContainer({ onClickLogout }) {
   return (
     <FooterContainerForm>
       <FooterButtonForm>
@@ -28,7 +28,7 @@ function FooterContainer(props) {
         </Link>
       </FooterButtonForm>
       <FooterButtonForm>
-        <Button size="large" variant="outlined">
+        <Button size="large" variant="outlined" onClick={onClickLogout}>
           로그아웃
         </Button>
       </FooterButtonForm>

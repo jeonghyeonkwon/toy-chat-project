@@ -8,7 +8,7 @@ const RoomCreateForm = styledComponent.div`
     justify-content: center;
     align-items: center;
 `;
-function RoomCreatePage(props) {
+function RoomCreatePage() {
   return (
     <RoomCreateForm>
       <RoomCreateContainer />

@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import styledComponent from "styled-components";
 import LoginPage from "./pages/LoginPage";
@@ -8,6 +8,8 @@ import RoomCreatePage from "./pages/RoomCreatePage";
 
 import RegisterPage from "./pages/RegisterPage";
 import RoomDetailPage from "./pages/RoomDetailPage";
+import { initSocketConnect, disconnectSocket } from "./lib/api/socket";
+import Auth from "./hoc/auth";
 const AppForm = styledComponent.div`
   width: 100%;
   height:100vh;
@@ -18,14 +20,28 @@ const AppForm = styledComponent.div`
 `;
 
 function App() {
+  useEffect(() => {
+    initSocketConnect();
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
   return (
     <>
       <AppForm>
-        <Route path={["/", "/login"]} exact component={LoginPage} />
-        <Route path="/register" exact component={RegisterPage} />
-        <Route path="/room" exact component={RoomListPage} />
-        <Route path="/room/:id" component={RoomDetailPage} />
-        <Route path="/room-create" exact component={RoomCreatePage} />
+        <Route
+          path={["/", "/login"]}
+          exact
+          component={Auth(LoginPage, false)}
+        />
+        <Route path="/register" exact component={Auth(RegisterPage, false)} />
+        <Route path="/room" exact component={Auth(RoomListPage, true)} />
+        <Route path="/room/:id" component={Auth(RoomDetailPage, true)} />
+        <Route
+          path="/room-create"
+          exact
+          component={Auth(RoomCreatePage, true)}
+        />
       </AppForm>
     </>
   );
