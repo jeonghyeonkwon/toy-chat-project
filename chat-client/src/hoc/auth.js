@@ -10,6 +10,7 @@ export default (COMPONENT, option, adminRoute = null) => {
     useEffect(() => {
       try {
         const get = localStorage.getItem("token");
+        console.log(get);
         if (get) {
           setToken(get);
         } else {

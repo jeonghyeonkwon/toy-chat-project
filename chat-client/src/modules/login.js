@@ -72,6 +72,7 @@ export default handleActions(
     [CHECK_FAILURE]: (state, { payload: error }) =>
       produce(state, (draft) => {
         draft.loginApi.authInfo.userRandomId = null;
+        localStorage.removeItem("token");
       }),
   },
   initialState

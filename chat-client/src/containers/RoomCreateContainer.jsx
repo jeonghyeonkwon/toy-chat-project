@@ -5,8 +5,8 @@ import FieldComponent from "../components/FieldComponent";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initialize, changeField, CREATE, createRoom } from "../modules/room";
+import { useCreateRoomSocket } from "../lib/socket/roomSocket";
 
-import { socket } from "../lib/api/socket";
 const RoomCreateHeaderForm = styledComponent.div`
   // background-color: dodgerblue;
   height:100%;
@@ -34,6 +34,7 @@ function RoomCreateContainer() {
       createFail: room.roomApi.error,
     })
   );
+  const { sendCreateRoom } = useCreateRoomSocket();
 
   const onChangeField = (e) => {
     const { name, value } = e.target;
@@ -42,13 +43,10 @@ function RoomCreateContainer() {
   const onClickCreateRoom = () => {
     dispatch(createRoom(roomForm));
   };
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("connection server");
-    });
-  });
+
   useEffect(() => {
     dispatch(initialize());
+
     return () => {
       dispatch(initialize());
     };
@@ -56,10 +54,7 @@ function RoomCreateContainer() {
   useEffect(() => {
     if (createSuccess) {
       alert("방 생성이 완료했습니다.");
-      socket.emit("createRoom", {
-        roomRandomId: createSuccess,
-        roomTitle: roomForm.roomTitle,
-      });
+      sendCreateRoom(createSuccess, roomForm);
       history.push(`/room/${createSuccess}`);
     }
     if (createFail) {

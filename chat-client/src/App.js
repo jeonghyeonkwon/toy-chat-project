@@ -8,7 +8,7 @@ import RoomCreatePage from "./pages/RoomCreatePage";
 
 import RegisterPage from "./pages/RegisterPage";
 import RoomDetailPage from "./pages/RoomDetailPage";
-import { initSocketConnect, disconnectSocket } from "./lib/api/socket";
+
 import Auth from "./hoc/auth";
 const AppForm = styledComponent.div`
   width: 100%;
@@ -20,12 +20,6 @@ const AppForm = styledComponent.div`
 `;
 
 function App() {
-  useEffect(() => {
-    initSocketConnect();
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
   return (
     <>
       <AppForm>

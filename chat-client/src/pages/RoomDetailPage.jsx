@@ -6,7 +6,7 @@ import HeaderContainer from "../containers/HeaderContainer";
 
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { socket, SOCKET_DEFAULT_URL } from "../lib/api/socket";
+import { useChatSocket } from "../lib/socket/chatSocket";
 import axios from "axios";
 
 const RoomDetailForm = styledComponent.div`
@@ -24,49 +24,27 @@ function RoomDetailPage() {
   const { userRandomId } = useSelector(({ login }) => ({
     userRandomId: login.loginApi.authInfo.userRandomId,
   }));
-  const [roomTitle, setRoomTitle] = useState("");
-  const [messageHistory, setMessageHistory] = useState([]);
-
+  // const [roomTitle, setRoomTitle] = useState("");
+  // const [messageHistory, setMessageHistory] = useState([]);
+  const { roomTitle, messageHistory, sendCreateChat } = useChatSocket(
+    location.pathname.split("/")[2]
+  );
   const [message, setMessage] = useState("");
   const onChangeMessage = (e) => {
     const { value } = e.target;
 
     setMessage(value);
   };
-  // const socket = io(CHAT_URL, {
-  //   path: "/socket.io/",
-  //   query: {
-  //     roomId: location.pathname.split("/")[2],
-  //   },
-  // });
+
   const onSendMessage = () => {
     console.log("click");
     const urlRoomId = location.pathname.split("/")[2];
-    const roomInfo = {
-      type: "chat",
-      roomRandomId: urlRoomId,
-      userRandomId: userRandomId,
-      message: message,
-    };
-    socket.emit("createChat", roomInfo);
+    sendCreateChat(urlRoomId, userRandomId, message);
+
     setMessage("");
   };
-  useEffect(() => {
-    socket.on("chatInfo", (data) => {
-      setMessageHistory([...messageHistory, data]);
-    });
-  });
-  useEffect(() => {
-    async function fetchChat() {
-      const response = await axios.get(
-        `${SOCKET_DEFAULT_URL}/api/room/${location.pathname.split("/")[2]}`
-      );
-      console.log(response);
-      setRoomTitle(response.data.roomTitle);
-      setMessageHistory(response.data.chatDtoList);
-    }
-    fetchChat();
-  }, []);
+  // https://medium.com/swlh/build-a-real-time-chat-app-with-react-hooks-and-socket-io-4859c9afecb0
+
   return (
     <RoomDetailForm>
       <HeaderContainer title={roomTitle} back />

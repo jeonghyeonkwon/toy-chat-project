@@ -1,14 +1,18 @@
 import { io } from "socket.io-client";
 export const SOCKET_DEFAULT_URL = "http://127.0.0.1:8000";
-export const ROOM_URL = `${SOCKET_DEFAULT_URL}/room`;
-export const CHAT_URL = `${SOCKET_DEFAULT_URL}/chat`;
-export let socket;
-export const initSocketConnect = () => {
+export const SOCKET_ROOM_URL = `${SOCKET_DEFAULT_URL}/room`;
+export const SOCKET_CHAT_URL = `${SOCKET_DEFAULT_URL}/chat`;
+export let roomSocket;
+
+export const initSocketRoomConnect = () => {
   console.log("소켓 연결...");
-  socket = io(SOCKET_DEFAULT_URL, { path: "/socket.io" });
+  roomSocket = io(SOCKET_ROOM_URL, { path: "/socket.io" });
+  return roomSocket;
 };
 
-export const disconnectSocket = () => {
+export const disconnectRoomSocket = () => {
   console.log("소켓 연결 끊기...");
-  if (socket) socket.disconnect();
+  if (roomSocket) roomSocket.disconnect();
 };
+
+export const scribeToRoom = () => {};
