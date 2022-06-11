@@ -6,7 +6,7 @@ export const SOCKET_ROOM_URL = `${SOCKET_DEFAULT_URL}/room`;
 
 const ROOM_CREATE_EVENT = "createRoom";
 const ROOM_INFO_EVENT = "roomInfo";
-
+const ROOM_UPDATE_EVENT = "updateRoom";
 export const useCreateRoomSocket = () => {
   const socketRef = useRef();
   useEffect(() => {
@@ -47,6 +47,29 @@ export const useScribeRoomSocket = () => {
     socketRef.current.on(ROOM_INFO_EVENT, (data) => {
       console.log(data);
       setRoom([...room, data]);
+    });
+    socketRef.current.on(ROOM_UPDATE_EVENT, (data) => {
+      console.log(data);
+      const { roomStatus, roomRandomId, roomTotalPerson } = data;
+      if (roomStatus === "update") {
+        const targetRoom = room.filter(
+          (obj) => obj.roomRandomId === roomRandomId
+        );
+        console.log("target1");
+        console.log(targetRoom[0]);
+        setRoom([
+          ...room.filter((obj) => obj.roomRandomId !== roomRandomId),
+          {
+            roomTitle: targetRoom[0].roomTitle,
+            roomRandomId: targetRoom[0].roomRandomId,
+            totalPerson: roomTotalPerson,
+          },
+        ]);
+        console.log("state");
+        console.log(room);
+      } else if (roomStatus === "close") {
+        setRoom([...room.filter((obj) => obj.roomRandomId !== roomRandomId)]);
+      }
     });
   }, [room]);
   return { room };
