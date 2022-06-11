@@ -5,7 +5,12 @@ import { Box, Grid, Button } from "@mui/material";
 import FieldComponent from "../components/FieldComponent";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { changeField, initialize, loginUser, LOGIN } from "../modules/login";
+import {
+  changeField,
+  loginInitialize,
+  loginUser,
+  LOGIN,
+} from "../modules/login";
 const LoginHeaderForm = styledComponent.div`
   // background-color: dodgerblue;
   height:100%;
@@ -57,6 +62,12 @@ function LoginContainer(props) {
       history.push("/login");
     }
   }, [token, loginError]);
+  useEffect(() => {
+    dispatch(loginInitialize());
+    return () => {
+      dispatch(loginInitialize());
+    };
+  }, []);
   return (
     <Box
       sx={{

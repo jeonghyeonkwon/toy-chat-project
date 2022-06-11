@@ -7,6 +7,7 @@ import * as userApi from "../lib/api/user";
 import { takeLatest } from "redux-saga/effects";
 
 const INITIALIZE = "login/INITIALIZE";
+const LOGIN_INITIALIZE = "login/LOGIN_INITIALIZE";
 const CHANGE_FIELD = "login/CHANGE_FIELD";
 
 export const [LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE] =
@@ -15,6 +16,7 @@ export const [CHECK, CHECK_SUCCESS, CHECK_FAILURE] =
   createRequestActionTypes("login/CHECK");
 
 export const initialize = createAction(INITIALIZE);
+export const loginInitialize = createAction(LOGIN_INITIALIZE);
 export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key,
   value,
@@ -42,6 +44,11 @@ const initialState = {
 export default handleActions(
   {
     [INITIALIZE]: (state) => initialState,
+    [LOGIN_INITIALIZE]: (state) =>
+      produce(state, (draft) => {
+        draft.user.userId = "";
+        draft.user.userPassword = "";
+      }),
     [CHANGE_FIELD]: (state, { payload: { key, value } }) =>
       produce(state, (draft) => {
         draft.user[key] = value;

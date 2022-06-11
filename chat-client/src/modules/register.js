@@ -7,12 +7,14 @@ import * as userApi from "../lib/api/user";
 import { takeLatest } from "redux-saga/effects";
 
 const INITIALIZE = "register/INITIALIZE";
+const REGISTER_INITIALIZE = "register/REGISTER_INITIALIZE";
 const CHANGE_FIELD = "register/CHANGE_FIELD";
 
 export const [REGISTER, REGISTER_SUCCESS, REGISTER_FAILURE] =
   createRequestActionTypes("register/REGISTER");
 
 export const initialize = createAction(INITIALIZE);
+export const registerInitialize = createAction(REGISTER_INITIALIZE);
 export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key,
   value,
@@ -34,6 +36,11 @@ const initialState = {
 export default handleActions(
   {
     [INITIALIZE]: (state) => initialState,
+    [REGISTER_INITIALIZE]: (state) =>
+      produce(state, (draft) => {
+        draft.user.userId = "";
+        draft.user.userPassword = "";
+      }),
     [CHANGE_FIELD]: (state, { payload: { key, value } }) =>
       produce(state, (draft) => {
         draft.user[key] = value;
