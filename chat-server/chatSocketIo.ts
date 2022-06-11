@@ -1,33 +1,26 @@
 import * as http from "http";
-import { createChatData, createRoomChangeStatus } from "./controllers/room";
+import {
+  chatList,
+  createChatData,
+  createRoomChangeStatus,
+  roomUpdate,
+} from "./controllers/room";
+import { RoomUpdateEnum } from "./enums/RoomEnum";
 const SocketIO = require("socket.io");
 
 export const chatSocketIo = (server: http.Server) => {
   const io = SocketIO(server, {
-    path: "/socket.io",
+    path: "/socket.io/",
     cors: {
       origin: "*",
     },
   });
-
   const room = io.of("/room");
   const chat = io.of("/chat");
-  io.on("connection", (socket: any) => {
-    const req = socket.request;
-    console.log("io");
-    // console.log(req);
-  });
-  // io.on("connection", function (socket: any) {
-  //   const req = socket.request;
-  //   console.log(req.url);
-  // });
-  room.on("connection", function (socket: any) {
-    const req = socket.request;
-    console.log("접속 완료");
-    console.log("room");
-    // console.log(req.url);
+  room.on("connection", (socket: any) => {
+    console.log("room namespace 연결");
+
     socket.on("createRoom", async (data: any) => {
-      console.log(data);
       const roomDto = await createRoomChangeStatus(data);
       console.log(roomDto);
       if (roomDto !== null) {
@@ -35,19 +28,61 @@ export const chatSocketIo = (server: http.Server) => {
       }
     });
   });
-  chat.on("connection", function (socket: any) {
-    console.log("------------- 챗 연결");
-    console.log("chat");
-    const req = socket.request;
-    // console.log(req);
+  chat.on("connection", async (socket: any) => {
+    console.log("chat----");
+    const { roomId } = socket.handshake.query;
+    // console.log(roomId);
+    socket.join(roomId);
+
+    const roomResponseDto = await roomUpdate(
+      RoomUpdateEnum.JOIN,
+      roomId,
+      chat.adapter
+    );
+    console.log("join");
+    console.log(roomResponseDto);
+    if (roomResponseDto !== null) {
+      room.emit("updateRoom", roomResponseDto);
+    }
+
+    // socket.emit("initChat", await chatList(roomId));
     socket.on("createChat", async (data: any) => {
       const chatDto = await createChatData(data);
       if (chatDto !== null) {
-        chat.emit("chatInfo", chatDto);
+        chat.to(roomId).emit("chatInfo", chatDto);
       }
     });
-    socket.on("disconection", () => {
-      console.log("연결 끊김");
+
+    socket.on("disconnect", async () => {
+      console.log("chat namespace 연결 해제");
+      console.log(roomId);
+      socket.leave(roomId);
+      const roomResponseDto = await roomUpdate(
+        RoomUpdateEnum.EXIT,
+        roomId,
+        chat.adapter
+      );
+      console.log("exit");
+      console.log(roomResponseDto);
+      if (roomResponseDto !== null) {
+        room.emit("updateRoom", roomResponseDto);
+        setTimeout(() => room.emit("updateRoom", roomResponseDto), 2000);
+      }
     });
   });
+
+  // io.on("connection", (socket: any) => {
+  //   const req = socket.request;
+  //   console.log("io");
+  //   // console.log(req);
+
+  //   socket.on("joinRoom", async (data: any) => {});
+  //   socket.on("exitRoom", () => {
+  //     console.log("연결 끊김");
+  //   });
+  // });
+  // io.on("connection", function (socket: any) {
+  //   const req = socket.request;
+  //   console.log(req.url);
+  // });
 };

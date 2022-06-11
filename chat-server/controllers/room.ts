@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { nextTick } from "process";
 import { v4 } from "uuid";
-import { RoomStatusEnum } from "../enums/RoomEnum";
+import {
+  RoomStatusEnum,
+  RoomUpdateEnum,
+  RoomResponseEnum,
+} from "../enums/RoomEnum";
 import { IChatGroup } from "../interfaces/chat";
 import { sequelize } from "../models";
 import Room from "../models/room";
@@ -10,6 +14,8 @@ import { ChatDto } from "../dto/ChatDto";
 import User from "../models/user";
 import { IRoomGroup } from "../interfaces/room";
 import { RoomDto } from "../dto/RoomDto";
+import { RoomResponseDto } from "../dto/RoomResponseDto";
+import { Sequelize } from "sequelize/types";
 export const roomList = async (
   req: Request,
   res: Response,
@@ -59,6 +65,52 @@ export const createRoom = async (
   }
 };
 
+export const roomUpdate = async (
+  roomUpdateType: RoomUpdateEnum,
+  roomRandomId: string,
+  chat: any
+) => {
+  const transaction = await sequelize.transaction();
+  try {
+    console.log("set");
+    console.log(roomRandomId);
+    console.log(chat.rooms.get(roomRandomId));
+    const room = await Room.findOne({ where: { roomRandomId: roomRandomId } });
+    if (!room) return null;
+    if (chat.rooms.get(roomRandomId) === undefined) {
+      const result = await room.update(
+        {
+          roomStatus: RoomStatusEnum.FINISH,
+          totalPerson: 0,
+        },
+        { transaction }
+      );
+      await transaction.commit();
+      return new RoomResponseDto(
+        RoomResponseEnum.CLOSE,
+        result.roomRandomId,
+        result.totalPerson
+      );
+    } else {
+      const result = await room.update(
+        {
+          totalPerson: chat.rooms.get(roomRandomId).size,
+        },
+        { transaction }
+      );
+      await transaction.commit();
+      return new RoomResponseDto(
+        RoomResponseEnum.UPDATE,
+        result.roomRandomId,
+        result.totalPerson
+      );
+    }
+  } catch (err) {
+    await transaction.rollback();
+    console.error(err);
+    return null;
+  }
+};
 export const chatList = async (
   req: Request,
   res: Response,
