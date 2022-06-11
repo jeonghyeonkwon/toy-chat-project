@@ -18,18 +18,18 @@ export const chatSocketIo = (server: http.Server) => {
   const room = io.of("/room");
   const chat = io.of("/chat");
   room.on("connection", (socket: any) => {
-    console.log("room namespace 연결");
+    // console.log("room namespace 연결");
 
     socket.on("createRoom", async (data: any) => {
       const roomDto = await createRoomChangeStatus(data);
-      console.log(roomDto);
+      // console.log(roomDto);
       if (roomDto !== null) {
         room.emit("roomInfo", roomDto);
       }
     });
   });
   chat.on("connection", async (socket: any) => {
-    console.log("chat----");
+    // console.log("chat----");
     const { roomId } = socket.handshake.query;
     // console.log(roomId);
     socket.join(roomId);
@@ -39,8 +39,8 @@ export const chatSocketIo = (server: http.Server) => {
       roomId,
       chat.adapter
     );
-    console.log("join");
-    console.log(roomResponseDto);
+    // console.log("join");
+    // console.log(roomResponseDto);
     if (roomResponseDto !== null) {
       room.emit("updateRoom", roomResponseDto);
     }
@@ -54,16 +54,16 @@ export const chatSocketIo = (server: http.Server) => {
     });
 
     socket.on("disconnect", async () => {
-      console.log("chat namespace 연결 해제");
-      console.log(roomId);
+      // console.log("chat namespace 연결 해제");
+      // console.log(roomId);
       socket.leave(roomId);
       const roomResponseDto = await roomUpdate(
         RoomUpdateEnum.EXIT,
         roomId,
         chat.adapter
       );
-      console.log("exit");
-      console.log(roomResponseDto);
+      // console.log("exit");
+      // console.log(roomResponseDto);
       if (roomResponseDto !== null) {
         room.emit("updateRoom", roomResponseDto);
         setTimeout(() => room.emit("updateRoom", roomResponseDto), 2000);

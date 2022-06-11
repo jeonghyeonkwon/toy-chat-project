@@ -72,9 +72,9 @@ export const roomUpdate = async (
 ) => {
   const transaction = await sequelize.transaction();
   try {
-    console.log("set");
-    console.log(roomRandomId);
-    console.log(chat.rooms.get(roomRandomId));
+    // console.log("set");
+    // console.log(roomRandomId);
+    // console.log(chat.rooms.get(roomRandomId));
     const room = await Room.findOne({ where: { roomRandomId: roomRandomId } });
     if (!room) return null;
     if (chat.rooms.get(roomRandomId) === undefined) {
@@ -184,7 +184,7 @@ export const createChatData = async (chat: IChatGroup) => {
   const transaction = await sequelize.transaction();
   const { type, roomRandomId, userRandomId, message } = chat;
   try {
-    console.log(chat);
+    // console.log(chat);
     const isExistUser = await User.findOne({ where: { userRandomId } });
     if (!isExistUser) throw Error(`유저가 없음`);
     const createChat = await Chat.create(
