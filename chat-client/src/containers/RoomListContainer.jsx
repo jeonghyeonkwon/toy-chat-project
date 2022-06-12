@@ -22,7 +22,7 @@ function RoomListContainer() {
       <Grid container rowSpacing={1} sx={12}>
         <Grid item xs={12}>
           {room.map((data) => (
-            <Link to={`/room/${data.roomRandomId}`}>
+            <Link to={`/room/${data.roomRandomId}`} key={data.roomRandomId}>
               <RoomListComponent roomInfo={data}></RoomListComponent>
             </Link>
           ))}

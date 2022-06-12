@@ -13,48 +13,54 @@ export const useChatSocket = (roomRandomId) => {
   const [messageHistory, setMessageHistory] = useState([]);
   const [roomTitle, setRoomTitle] = useState("");
   useEffect(() => {
-    async function fetchChat() {
-      try {
-        const response = await axios.get(
-          `${SOCKET_DEFAULT_URL}/api/room/${roomRandomId}`
-        );
-        console.log(response.data);
-        setRoomTitle(response.data.roomTitle);
-        setMessageHistory(response.data.chatDtoList);
-      } catch (err) {
-        alert(err.response.data.msg);
-        history.push("/room");
-      }
-    }
+    // setTimeout(() => {
+    //   async function fetchChat() {
+    //     try {
+    //       const response = await axios.get(
+    //         `${SOCKET_DEFAULT_URL}/api/room/${roomRandomId}`
+    //       );
+    //       console.log(response.data);
+    //       setRoomTitle(response.data.roomTitle);
+    //       setMessageHistory(response.data.chatDtoList);
+    //     } catch (err) {
+    //       alert(err.response.data.msg);
+    //       history.push("/room");
+    //     }
+    //   }
 
-    fetchChat();
+    //   fetchChat();
+    console.log(`useEffect ${roomRandomId}`);
+    setTimeout(() => {
+      socketRef.current = io(SOCKET_CHAT_URL, {
+        path: "/socket.io",
+        query: { roomId: roomRandomId },
+      });
+      socketRef.current.on(CHAT_INIT_EVENT, (data) => {
+        console.log("init");
+        console.log(data);
+        setRoomTitle(data.roomTitle);
+        console.log(data.chatDtoList);
+        setMessageHistory((message) => [...message, ...data.chatDtoList]);
+        console.log(messageHistory);
+      });
 
-    socketRef.current = io(SOCKET_CHAT_URL, {
-      path: "/socket.io",
-      query: { roomId: roomRandomId },
-    });
-    // socketRef.current.on(CHAT_INIT_EVENT, (data) => {
-    //   console.log("init");
-    //   console.log(data);
-    //   setRoomTitle(data.roomTitle);
-    //   console.log(data.chatDtoList);
-    //   setMessageHistory((message) => [...message, ...data.chatDtoList]);
-    //   console.log(messageHistory);
-    // });
+      socketRef.current.on(CHAT_INFO_EVENT, (data) => {
+        console.log("data");
+        console.log(data);
+        console.log("before ");
+        console.log(messageHistory);
+        setMessageHistory((message) => [...message, data]);
+        console.log("after message ");
+        console.log(messageHistory);
+      });
+    }, 1000);
 
-    socketRef.current.on(CHAT_INFO_EVENT, (data) => {
-      console.log("data");
-      console.log(data);
-      console.log("before ");
-      console.log(messageHistory);
-      setMessageHistory((message) => [...message, data]);
-      console.log("after message ");
-      console.log(messageHistory);
-    });
+    // }, 2000);
+
     return () => {
       socketRef.current.disconnect();
     };
-  }, [roomRandomId]);
+  }, []);
 
   useEffect(() => {}, [messageHistory]);
   const sendCreateChat = (roomRandomId, userRandomId, message) => {
