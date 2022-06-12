@@ -3,6 +3,7 @@ import {
   chatList,
   createChatData,
   createRoomChangeStatus,
+  roomList,
   roomUpdate,
 } from "./controllers/room";
 import { RoomUpdateEnum } from "./enums/RoomEnum";
@@ -17,58 +18,71 @@ export const chatSocketIo = (server: http.Server) => {
   });
   const room = io.of("/room");
   const chat = io.of("/chat");
-  room.on("connection", (socket: any) => {
+  room.on("connection", async (socket: any) => {
     // console.log("room namespace 연결");
+    const roomDtoList = await roomList();
 
+    room.emit("roomInit", roomDtoList);
     socket.on("createRoom", async (data: any) => {
       const roomDto = await createRoomChangeStatus(data);
       // console.log(roomDto);
       if (roomDto !== null) {
-        room.emit("roomInfo", roomDto);
+        room.emit("updateRoom", roomDto);
       }
     });
   });
   chat.on("connection", async (socket: any) => {
     // console.log("chat----");
     const { roomId } = socket.handshake.query;
-    // console.log(roomId);
-    socket.join(roomId);
+    if (roomId !== undefined) {
+      console.log(`roomId ${roomId}`);
+      socket.join(roomId);
 
-    const roomResponseDto = await roomUpdate(
-      RoomUpdateEnum.JOIN,
-      roomId,
-      chat.adapter
-    );
-    // console.log("join");
-    // console.log(roomResponseDto);
-    if (roomResponseDto !== null) {
-      room.emit("updateRoom", roomResponseDto);
-    }
-
-    // socket.emit("initChat", await chatList(roomId));
-    socket.on("createChat", async (data: any) => {
-      const chatDto = await createChatData(data);
-      if (chatDto !== null) {
-        chat.to(roomId).emit("chatInfo", chatDto);
-      }
-    });
-
-    socket.on("disconnect", async () => {
-      // console.log("chat namespace 연결 해제");
-      // console.log(roomId);
-      socket.leave(roomId);
       const roomResponseDto = await roomUpdate(
-        RoomUpdateEnum.EXIT,
+        RoomUpdateEnum.JOIN,
         roomId,
         chat.adapter
       );
-      // console.log("exit");
-      // console.log(roomResponseDto);
+      // console.log("join");
+      console.log(roomResponseDto);
+      const chatDtoList = await chatList(roomId);
+      console.log("dto");
+      console.log(chatDtoList);
+      if (chatDtoList !== null) {
+        console.log(chatDtoList);
+        chat.to(roomId).emit("initChat", chatDtoList);
+      }
+
       if (roomResponseDto !== null) {
         room.emit("updateRoom", roomResponseDto);
-        setTimeout(() => room.emit("updateRoom", roomResponseDto), 2000);
+        // setTimeout(() => room.emit("updateRoom", roomResponseDto), 2000);
       }
-    });
+
+      // socket.emit("initChat", await chatList(roomId));
+      socket.on("createChat", async (data: any) => {
+        const chatDto = await createChatData(data);
+        if (chatDto !== null) {
+          chat.to(roomId).emit("chatInfo", chatDto);
+        }
+      });
+
+      socket.on("disconnect", async () => {
+        console.log("chat namespace 연결 해제");
+        // console.log(roomId);
+        socket.leave(roomId);
+        const roomResponseDto = await roomUpdate(
+          RoomUpdateEnum.EXIT,
+          roomId,
+          chat.adapter
+        );
+        // console.log("exit");
+        // console.log(roomResponseDto);
+        if (roomResponseDto !== null) {
+          room.emit("updateRoom", roomResponseDto);
+          setTimeout(() => room.emit("updateRoom", roomResponseDto), 2000);
+        }
+      });
+    }
   });
 
   // io.on("connection", (socket: any) => {

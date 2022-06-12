@@ -15,26 +15,28 @@ import User from "../models/user";
 import { IRoomGroup } from "../interfaces/room";
 import { RoomDto } from "../dto/RoomDto";
 import { RoomResponseDto } from "../dto/RoomResponseDto";
-import { Sequelize } from "sequelize/types";
-export const roomList = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const roomList = await Room.findAll({
-      where: {
-        roomStatus: RoomStatusEnum.ING,
-      },
-    });
-    const roomDtoList = roomList.map(
-      (obj) => new RoomDto(obj.roomTitle, obj.roomRandomId, obj.totalPerson)
-    ) as RoomDto[];
-    res.status(200).send(roomDtoList);
-  } catch (err) {
-    next(err);
-  }
-};
+
+export const roomList = async () =>
+  // req: Request,
+  // res: Response,
+  // next: NextFunction
+  {
+    try {
+      const roomList = await Room.findAll({
+        where: {
+          roomStatus: RoomStatusEnum.ING,
+        },
+      });
+      const roomDtoList = roomList.map(
+        (obj) => new RoomDto(obj.roomTitle, obj.roomRandomId, obj.totalPerson)
+      ) as RoomDto[];
+      return roomDtoList;
+      // res.status(200).send(roomDtoList);
+    } catch (err) {
+      // next(err);
+      console.error(err);
+    }
+  };
 export const createRoom = async (
   req: Request,
   res: Response,
@@ -72,9 +74,9 @@ export const roomUpdate = async (
 ) => {
   const transaction = await sequelize.transaction();
   try {
-    // console.log("set");
-    // console.log(roomRandomId);
-    // console.log(chat.rooms.get(roomRandomId));
+    console.log("set");
+    console.log(roomRandomId);
+    console.log(chat.rooms.get(roomRandomId));
     const room = await Room.findOne({ where: { roomRandomId: roomRandomId } });
     if (!room) return null;
     if (chat.rooms.get(roomRandomId) === undefined) {
@@ -86,11 +88,9 @@ export const roomUpdate = async (
         { transaction }
       );
       await transaction.commit();
-      return new RoomResponseDto(
-        RoomResponseEnum.CLOSE,
-        result.roomRandomId,
-        result.totalPerson
-      );
+      return new RoomResponseDto(RoomResponseEnum.CLOSE, [
+        new RoomDto(result.roomTitle, roomRandomId, result.totalPerson),
+      ]);
     } else {
       const result = await room.update(
         {
@@ -99,11 +99,9 @@ export const roomUpdate = async (
         { transaction }
       );
       await transaction.commit();
-      return new RoomResponseDto(
-        RoomResponseEnum.UPDATE,
-        result.roomRandomId,
-        result.totalPerson
-      );
+      return new RoomResponseDto(RoomResponseEnum.UPDATE, [
+        new RoomDto(result.roomTitle, roomRandomId, result.totalPerson),
+      ]);
     }
   } catch (err) {
     await transaction.rollback();
@@ -112,12 +110,13 @@ export const roomUpdate = async (
   }
 };
 export const chatList = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+  // req: Request,
+  // res: Response,
+  // next: NextFunction
+  roomRandomId: string
 ) => {
   try {
-    const roomRandomId = req.params.id!;
+    // const roomRandomId = req.params.id!;
     const isExistRoom = await Room.findOne({ where: { roomRandomId } });
     if (!isExistRoom || isExistRoom.roomStatus === RoomStatusEnum.FINISH) {
       throw Error("존재하지 않는 방입니다.");
@@ -141,12 +140,14 @@ export const chatList = async (
           chat.createdAt
         )
     );
-
-    res
-      .status(200)
-      .send({ roomTitle: isExistRoom.roomTitle, chatDtoList: chatDtoList });
+    return { roomTitle: isExistRoom.roomTitle, chatDtoList: chatDtoList };
+    // res
+    //   .status(200)
+    //   .send({ roomTitle: isExistRoom.roomTitle, chatDtoList: chatDtoList });
   } catch (err) {
-    next(err);
+    // next(err);
+    console.error(err);
+    return null;
   }
 };
 
@@ -169,11 +170,19 @@ export const createRoomChangeStatus = async (room: IRoomGroup) => {
       { transaction }
     );
     await transaction.commit();
-    return new RoomDto(
-      updateRoom.roomTitle,
-      updateRoom.roomRandomId,
-      updateRoom.totalPerson
-    );
+    return new RoomResponseDto(RoomResponseEnum.CREATE, [
+      new RoomDto(
+        updateRoom.roomTitle,
+        updateRoom.roomRandomId,
+        updateRoom.totalPerson
+      ),
+    ]);
+
+    // new RoomDto(
+    //   updateRoom.roomTitle,
+    //   updateRoom.roomRandomId,
+    //   updateRoom.totalPerson
+    // );
   } catch (err) {
     await transaction.rollback();
     console.error(err);

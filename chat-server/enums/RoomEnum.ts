@@ -8,6 +8,7 @@ export enum RoomUpdateEnum {
   EXIT = "exit",
 }
 export enum RoomResponseEnum {
+  CREATE = "create",
   UPDATE = "update",
   CLOSE = "close",
 }

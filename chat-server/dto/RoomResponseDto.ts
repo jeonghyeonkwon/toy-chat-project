@@ -1,16 +1,11 @@
 import { RoomResponseEnum } from "../enums/RoomEnum";
+import { RoomDto } from "./RoomDto";
 export class RoomResponseDto {
   roomStatus: RoomResponseEnum;
-  roomRandomId: string;
-  roomTotalPerson: number;
+  roomData: Array<RoomDto>;
 
-  constructor(
-    roomStatus: RoomResponseEnum,
-    roomRandomId: string,
-    roomTotalPerson: number
-  ) {
+  constructor(roomStatus: RoomResponseEnum, roomDtoList: Array<RoomDto>) {
     this.roomStatus = roomStatus;
-    this.roomRandomId = roomRandomId;
-    this.roomTotalPerson = roomTotalPerson;
+    this.roomData = roomDtoList;
   }
 }
