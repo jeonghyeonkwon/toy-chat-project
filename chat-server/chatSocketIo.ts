@@ -19,13 +19,15 @@ export const chatSocketIo = (server: http.Server) => {
   const room = io.of("/room");
   const chat = io.of("/chat");
   room.on("connection", async (socket: any) => {
-    // console.log("room namespace 연결");
+    console.log("room namespace 연결");
+    console.log(`socketId : ${socket.id}`);
     const roomDtoList = await roomList();
 
-    room.emit("roomInit", roomDtoList);
+    room.to(socket.id).emit("roomInit", roomDtoList);
+
     socket.on("createRoom", async (data: any) => {
       const roomDto = await createRoomChangeStatus(data);
-      // console.log(roomDto);
+      console.log(roomDto);
       if (roomDto !== null) {
         room.emit("updateRoom", roomDto);
       }
@@ -34,8 +36,9 @@ export const chatSocketIo = (server: http.Server) => {
   chat.on("connection", async (socket: any) => {
     // console.log("chat----");
     const { roomId } = socket.handshake.query;
+    console.log(`before roomId : ${roomId}`);
     if (roomId !== undefined) {
-      console.log(`roomId ${roomId}`);
+      console.log(`after roomId : ${roomId}`);
       socket.join(roomId);
 
       const roomResponseDto = await roomUpdate(
@@ -50,7 +53,7 @@ export const chatSocketIo = (server: http.Server) => {
       console.log(chatDtoList);
       if (chatDtoList !== null) {
         console.log(chatDtoList);
-        chat.to(roomId).emit("initChat", chatDtoList);
+        chat.to(socket.id).emit("initChat", chatDtoList);
       }
 
       if (roomResponseDto !== null) {
