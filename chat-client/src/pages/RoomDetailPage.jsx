@@ -7,7 +7,6 @@ import HeaderContainer from "../containers/HeaderContainer";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useChatSocket } from "../lib/socket/chatSocket";
-import axios from "axios";
 
 const RoomDetailForm = styledComponent.div`
     width: 400px;

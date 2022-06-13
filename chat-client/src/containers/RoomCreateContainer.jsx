@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styledComponent from "styled-components";
 import { Box, Grid, Button } from "@mui/material";
 import FieldComponent from "../components/FieldComponent";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initialize, changeField, CREATE, createRoom } from "../modules/room";
 import { useCreateRoomSocket } from "../lib/socket/roomSocket";
@@ -26,6 +26,7 @@ padding:25px;
 function RoomCreateContainer() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const { roomForm, createLoading, createSuccess, createFail } = useSelector(
     ({ room, loading }) => ({
       roomForm: room.roomForm,
@@ -55,7 +56,8 @@ function RoomCreateContainer() {
     if (createSuccess) {
       alert("방 생성이 완료했습니다.");
       sendCreateRoom(createSuccess, roomForm);
-      history.push(`/room/${createSuccess}`);
+      window.location.replace(`/room/${createSuccess}`);
+      // location.reload();
     }
     if (createFail) {
       alert(createFail);

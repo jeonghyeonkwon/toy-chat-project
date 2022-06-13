@@ -6,7 +6,7 @@ export const SOCKET_ROOM_URL = `${SOCKET_DEFAULT_URL}/room`;
 
 const ROOM_CREATE_EVENT = "createRoom";
 const ROOM_INIT_EVENT = "roomInit";
-const ROOM_INFO_EVENT = "roomInfo";
+
 const ROOM_UPDATE_EVENT = "updateRoom";
 export const useCreateRoomSocket = () => {
   const socketRef = useRef();
@@ -32,14 +32,6 @@ export const useScribeRoomSocket = () => {
   const [initFlag, setInitFlag] = useState(false);
   useEffect(() => {
     socketRef.current = io(SOCKET_ROOM_URL, { path: "/socket.io" });
-    //   async function fetchRoomList() {
-    //     const result = await axios.get(`${SOCKET_DEFAULT_URL}/api/room`);
-    //     console.log(result);
-    //     const roomList = result.data;
-    //     console.log(roomList);
-    //     setRoom(roomList);
-    //   }
-    //   fetchRoomList();
 
     socketRef.current.on(ROOM_INIT_EVENT, (data) => {
       if (!initFlag) {
@@ -52,50 +44,54 @@ export const useScribeRoomSocket = () => {
       socketRef.current.disconnect();
     };
   }, []);
+  function createRoomFn(data) {
+    console.log("createRoomFn");
+    setRoom([...room, ...data.roomData]);
+  }
+  function updateRoomFn(data) {
+    console.log("updateRoomFn");
+
+    console.log(room);
+    console.log("updateData");
+    console.log(data);
+    const targetRoom = room.filter(function (obj) {
+      if (obj.roomRandomId === data.roomData[0].roomRandomId) return obj;
+    })[0];
+    const updateRoom = {
+      ...targetRoom,
+      totalPerson: data.roomData[0].totalPerson,
+    };
+    setRoom([
+      ...room.filter(
+        (obj) => obj.roomRandomId !== data.roomData[0].roomRandomId
+      ),
+      updateRoom,
+    ]);
+  }
+  function deleteRoomFn(data) {
+    console.log("deleteRoomFn");
+    setRoom([
+      ...room.filter(
+        (obj) => obj.roomRandomId !== data.roomData[0].roomRandomId
+      ),
+    ]);
+  }
+  function roomUpdateFn(data) {
+    console.log(data);
+    if (data.roomStatus === "create") {
+      createRoomFn(data);
+    } else if (data.roomStatus === "update") {
+      updateRoomFn(data);
+    } else if (data.roomStatus === "close") {
+      deleteRoomFn(data);
+    }
+  }
   useEffect(() => {
-    socketRef.current.on(ROOM_INFO_EVENT, (data) => {
-      console.log(data);
-      setRoom([...room, data]);
-      console.log("room---------");
-      console.log(room);
-    });
-
-    socketRef.current.on(ROOM_UPDATE_EVENT, (data) => {
-      console.log(data);
-      if (data.roomStatus === "create") {
-        setRoom([...room, ...data.roomData]);
-      } else if (data.roomStatus === "update") {
-        console.log("-------room------");
-        console.log(room);
-        const targetRoom = room.filter(function (obj) {
-          if (obj.roomRandomId === data.roomRandomId) return obj;
-        })[0];
-        const updateRoom = {
-          ...targetRoom,
-          totalPerson: data.roomTotalPerson,
-        };
-        console.log("target1");
-        console.log(typeof targetRoom);
-
-        console.log();
-        console.log(targetRoom);
-        // const { roomTitle, roomRandomId } = targetRoom;
-        // if (roomTitle !== undefined && roomRandomId !== undefined) {
-        // console.log(`title ${roomTitle}, randomId ${roomRandomId}`);
-        setRoom([
-          ...room.filter((obj) => obj.roomRandomId !== data.roomRandomId),
-          updateRoom,
-        ]);
-        console.log("state");
-        console.log(room);
-        // }
-      } else if (data.roomStatus === "close") {
-        setRoom([
-          ...room.filter((obj) => obj.roomRandomId !== data.roomRandomId),
-        ]);
-      }
-    });
-  }, [initFlag]);
+    socketRef.current.on(ROOM_UPDATE_EVENT, roomUpdateFn);
+    return () => {
+      socketRef.current.off(ROOM_UPDATE_EVENT, roomUpdateFn);
+    };
+  }, [room]);
 
   return { room };
 };
